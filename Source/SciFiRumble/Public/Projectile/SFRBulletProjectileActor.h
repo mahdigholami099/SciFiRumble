@@ -4,34 +4,43 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SFRDestroyZone.generated.h"
+#include "SFRBulletProjectileActor.generated.h"
 
-class UBoxComponent;
+class UProjectileMovementComponent;
+class USphereComponent;
 UCLASS()
-class SCIFIRUMBLE_API ASFRDestroyZone : public AActor
+class SCIFIRUMBLE_API ASFRBulletProjectileActor : public AActor
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(BlueprintReadOnly)
+	FVector Velocity;
+	
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USceneComponent* Root;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UBoxComponent* TriggerBox;
+	UStaticMeshComponent* ProjectileMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	USphereComponent* TriggerSphere;
 	
-public:
+	UPROPERTY(EditDefaultsOnly)
+	UProjectileMovementComponent* ProjectileMovementComponent;
 	
-	ASFRDestroyZone();
+public:	
+	ASFRBulletProjectileActor();
 
 	UFUNCTION()
 	void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 	UFUNCTION(BlueprintNativeEvent)
-	void OnBeginDestroy(AActor* OtherActor);
+	void OnHit(AActor* OtherActor);
 
 protected:
-
 	virtual void BeginPlay() override;
 
 };

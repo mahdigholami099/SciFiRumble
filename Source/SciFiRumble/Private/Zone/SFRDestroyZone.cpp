@@ -4,7 +4,6 @@
 #include "Zone/SFRDestroyZone.h"
 
 #include "Components/BoxComponent.h"
-#include "Extension/SFRZoneExtension.h"
 #include "GameState/SFRMultiplayerGameState.h"
 #include "Interface/SFRDestroyZoneInterface.h"
 
@@ -41,11 +40,11 @@ void ASFRDestroyZone::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 		}
 		if (bIsDestroyed)
 		{
-			for (TSubclassOf<USFRZoneExtension>& AfterDestroyEffect: AfterDestroyEffects)
-			{
-				USFRZoneExtension* Effect = AfterDestroyEffect.GetDefaultObject();
-				Effect->Init(GetWorld()->GetGameState<ASFRMultiplayerGameState>(), OtherActor->GetActorLocation());
-			}
+			OnBeginDestroy(OtherActor);
 		}
 	}
+}
+
+void ASFRDestroyZone::OnBeginDestroy_Implementation(AActor* OtherActor)
+{
 }

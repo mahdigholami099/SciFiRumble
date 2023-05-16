@@ -22,7 +22,7 @@ protected:
 public:
 
 	UFUNCTION(BlueprintCallable)
-	ASFRCameraActor* GetCamera() const {return Camera;}
+	ASFRCameraActor* GetCamera() const;
 	
 protected:
 

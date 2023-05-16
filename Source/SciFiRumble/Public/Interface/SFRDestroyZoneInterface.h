@@ -7,7 +7,7 @@
 #include "SFRDestroyZoneInterface.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(BlueprintType)
 class USFRDestroyZoneInterface : public UInterface
 {
 	GENERATED_BODY()
