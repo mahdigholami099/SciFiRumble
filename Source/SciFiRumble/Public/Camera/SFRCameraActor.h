@@ -20,6 +20,7 @@ protected:
 	TSubclassOf<UCameraShakeBase> ShakeClass;
 
 public:
+	UFUNCTION(BlueprintCallable)
 	void Shake() const;
 	
 };
