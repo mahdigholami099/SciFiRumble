@@ -62,7 +62,10 @@ void ASFRPlayerCharacter::BeginPlay()
 
 	if (const ASFRMultiplayerGameState* GameState = GetWorld()->GetGameState<ASFRMultiplayerGameState>())
 	{
-		CameraForwardVector = GameState->GetCamera()->GetActorForwardVector();
-		CameraRightVector = GameState->GetCamera()->GetActorRightVector();
+		if (IsValid(GameState->GetCamera()))
+		{
+			CameraForwardVector = GameState->GetCamera()->GetActorForwardVector();
+			CameraRightVector = GameState->GetCamera()->GetActorRightVector();
+		}
 	}
 }

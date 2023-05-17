@@ -15,9 +15,6 @@ class SCIFIRUMBLE_API ASFRMultiplayerGameMode : public AGameMode
 	GENERATED_BODY()
 
 public:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	uint8 MaxPlayer;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool bShouldFillWithAI = true;
