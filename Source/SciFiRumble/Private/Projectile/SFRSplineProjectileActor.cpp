@@ -7,6 +7,7 @@
 #include "Components/SplineComponent.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "GameMode/SFRMultiplayerGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -34,10 +35,14 @@ void ASFRSplineProjectileActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FTimerHandle TimerHandle;
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &ASFRSplineProjectileActor::FireTheProjectile, LaunchTimeDelay);
+	AGameModeBase* GameModeNotCasted = UGameplayStatics::GetGameMode(GetWorld());
+	if (!IsValid(GameModeNotCasted)) return;
 
-	Spline->ClearSplinePoints();
+	if (ASFRMultiplayerGameMode* GameMode = Cast<ASFRMultiplayerGameMode>(GameModeNotCasted))
+	{
+		GameMode->OnGameStart.AddDynamic(this, &ASFRSplineProjectileActor::GameStart);
+	}
+
 }
 
 void ASFRSplineProjectileActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
@@ -77,6 +82,14 @@ void ASFRSplineProjectileActor::FireTheProjectile()
 	ProjectileMesh->SetHiddenInGame(false);
 	ProjectileMovementComponent->Velocity = UKismetMathLibrary::GetForwardVector(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), LaunchTarget+GetActorLocation())) * Velocity;
 	ProjectileMovementComponent->SetActive(true);
+}
+
+void ASFRSplineProjectileActor::GameStart()
+{
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ASFRSplineProjectileActor::FireTheProjectile, LaunchTimeDelay);
+
+	Spline->ClearSplinePoints();
 }
 
 void ASFRSplineProjectileActor::OnProjectileFire_Implementation()

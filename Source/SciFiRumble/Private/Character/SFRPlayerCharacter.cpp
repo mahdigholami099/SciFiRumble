@@ -4,14 +4,15 @@
 #include "Character/SFRPlayerCharacter.h"
 
 #include "Camera/SFRCameraActor.h"
+#include "GameMode/SFRMultiplayerGameMode.h"
 #include "GameState/SFRMultiplayerGameState.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 FBarrelRotation ASFRPlayerCharacter::GetBarrelRotation()
 {
 	const float GunRotatorY = GetInputAxisValue(FName("GunRotatorY"));          
 	const float GunRotatorX = GetInputAxisValue(FName("GunRotatorX"));
-	UE_LOG(LogTemp, Warning, TEXT("X: %f         Y: %f"), GunRotatorX, GunRotatorY);
 	const float GamepadRotation = UKismetMathLibrary::FindLookAtRotation(FVector::ZeroVector,
 		FVector{
 			-1 * GunRotatorY,
@@ -60,6 +61,17 @@ void ASFRPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AGameModeBase* GameModeNotCasted = UGameplayStatics::GetGameMode(GetWorld());
+	if (!IsValid(GameModeNotCasted)) return;
+
+	if (ASFRMultiplayerGameMode* GameMode = Cast<ASFRMultiplayerGameMode>(GameModeNotCasted))
+	{
+		GameMode->OnGameStart.AddDynamic(this, &ASFRPlayerCharacter::GameStart);
+	}
+}
+
+void ASFRPlayerCharacter::GameStart()
+{
 	if (const ASFRMultiplayerGameState* GameState = GetWorld()->GetGameState<ASFRMultiplayerGameState>())
 	{
 		if (IsValid(GameState->GetCamera()))

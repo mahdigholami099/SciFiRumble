@@ -60,4 +60,7 @@ protected:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnProjectileFire();
+
+	UFUNCTION()
+	void GameStart();
 };

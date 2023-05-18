@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameMode/SFRMultiplayerGameMode.h"
 #include "Interface/SFRDestroyZoneInterface.h"
 #include "SFRCharacter.generated.h"
 
 
+class USFRCharacterVariety;
 class ASFRBulletProjectileActor;
 UENUM(BlueprintType)
 enum class ERotationMethod : uint8
@@ -66,6 +68,13 @@ protected:
 	// ProjectileVelocity = ShootVelocityMultiplier * Ammo
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int ShootVelocityMultiplier = 1000;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TArray<TSubclassOf<USFRCharacterVariety>> CharacterVariety;
+
+	int CharacterIndex = -1;
+
+	int SkinIndex = 0;
 
 public:
 
@@ -91,6 +100,12 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	bool OnCustomDestroy();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void ChangeCharacter(EOrder Order);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void ChangeSkin(EOrder Order);
 	
 protected:
 

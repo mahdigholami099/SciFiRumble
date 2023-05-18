@@ -6,6 +6,15 @@
 #include "GameFramework/GameStateBase.h"
 #include "SFRMultiplayerGameState.generated.h"
 
+
+UENUM(BlueprintType)
+enum class EGameStatus : uint8
+{
+	SpawnCharacter,
+	CustomizeCharacter,
+	InMiddleOfGame,
+};
+
 class ASFRCameraActor;
 /**
  * 
@@ -15,7 +24,13 @@ class SCIFIRUMBLE_API ASFRMultiplayerGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
+public:
+
+	UPROPERTY(BlueprintReadOnly)
+	EGameStatus GameStatus = EGameStatus::SpawnCharacter;
+	
 protected:
+	
 	UPROPERTY()
 	ASFRCameraActor* Camera;
 

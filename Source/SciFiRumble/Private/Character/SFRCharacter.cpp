@@ -3,6 +3,7 @@
 
 #include "Character/SFRCharacter.h"
 
+#include "Character/SFRCharacterVariety.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Projectile/SFRBulletProjectileActor.h"
 
@@ -43,15 +44,58 @@ bool ASFRCharacter::CustomDestroy_Implementation()
 	return OnCustomDestroy();
 }
 
+void ASFRCharacter::ChangeCharacter_Implementation(EOrder Order)
+{
+	const int Len = CharacterVariety.Num();
+	if (Len == 0) return;
+	SkinIndex = 0;
+
+	if (Order == EOrder::Next)
+	{
+		CharacterIndex++;
+		if (CharacterIndex >= Len) CharacterIndex = 0;
+	}
+	else
+	{
+		CharacterIndex--;
+		if (CharacterIndex < 0) CharacterIndex = Len -1;
+	}
+	
+
+	CharacterVariety[CharacterIndex].GetDefaultObject()->SetCharacter(this);
+	CharacterVariety[CharacterIndex].GetDefaultObject()->SetSkin(this, SkinIndex);
+}
+
 bool ASFRCharacter::OnCustomDestroy_Implementation()
 {
 	return true;
 }
 
+void ASFRCharacter::ChangeSkin_Implementation(EOrder Order)
+{
+	if (!CharacterVariety.IsValidIndex(CharacterIndex)) return;
+	const int Len = CharacterVariety[CharacterIndex].GetDefaultObject()->SkinVariety.Num();
+	if (Len == 0) return;
+
+	if (Order == EOrder::Next)
+	{
+		SkinIndex++;
+		if (SkinIndex >= Len) SkinIndex = 0;
+	}
+	else
+	{
+		SkinIndex--;
+		if (SkinIndex < 0) SkinIndex = Len -1;
+	}
+
+	CharacterVariety[CharacterIndex].GetDefaultObject()->SetSkin(this, SkinIndex);
+}
+
 void ASFRCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	ChangeCharacter(EOrder::Next);
 }
 
 

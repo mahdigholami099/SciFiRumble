@@ -14,4 +14,11 @@ class SCIFIRUMBLE_API ASFRPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+protected:
+
+	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void GameStart();
+
 };
