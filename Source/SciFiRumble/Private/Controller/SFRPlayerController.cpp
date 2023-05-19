@@ -3,7 +3,9 @@
 
 #include "Controller/SFRPlayerController.h"
 
+#include "Camera/SFRCameraActor.h"
 #include "GameMode/SFRMultiplayerGameMode.h"
+#include "GameState/SFRMultiplayerGameState.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -23,4 +25,13 @@ void ASFRPlayerController::BeginPlay()
 void ASFRPlayerController::GameStart()
 {
 	EnableInput(this);
+
+	if (const ASFRMultiplayerGameState* GameState = GetWorld()->GetGameState<ASFRMultiplayerGameState>())
+	{
+		if (IsValid(GameState->GetCamera()))
+		{
+			SetViewTarget(GameState->GetCamera());
+		}
+	}
+
 }

@@ -100,6 +100,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StartGame();
 	
+	UFUNCTION(BlueprintCallable)
+    void FillRestWithAI();
+	
 protected:
 
 	virtual void BeginPlay() override;

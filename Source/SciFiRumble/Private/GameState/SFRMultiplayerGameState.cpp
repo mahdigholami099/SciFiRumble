@@ -10,6 +10,7 @@ ASFRCameraActor* ASFRMultiplayerGameState::GetCamera() const
 {
 	if (Camera != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("DDD"));
 		return Camera;
 	}
 	TArray<AActor*> Result;

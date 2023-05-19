@@ -124,11 +124,17 @@ void ASFRMultiplayerGameMode::ConfirmCharacter()
 
 void ASFRMultiplayerGameMode::StartGame()
 {
-	OnGameStart.Broadcast();
 	for (const FSpawnData EachSpawnDate: SpawnData)
 	{
 		EachSpawnDate.Controller->Possess(EachSpawnDate.Character);
 	}
+	OnGameStart.Broadcast();
+}
+
+void ASFRMultiplayerGameMode::FillRestWithAI()
+{
+	
+	StartGame();
 }
 
 void ASFRMultiplayerGameMode::BeginPlay()

@@ -18,16 +18,17 @@ FBarrelRotation ASFRPlayerCharacter::GetBarrelRotation()
 			-1 * GunRotatorY,
 			GunRotatorX,
 			0.0f}).Yaw;
-	if (const ASFRMultiplayerGameState* GameState = GetWorld()->GetGameState<ASFRMultiplayerGameState>())
+	if (!IsValid(Camera))
 	{
-		if (const ASFRCameraActor* Camera = GameState->GetCamera())
+		if (const ASFRMultiplayerGameState* GameState = GetWorld()->GetGameState<ASFRMultiplayerGameState>())
 		{
-			const float ActorRotationRelativeToCamera = UKismetMathLibrary::NormalizedDeltaRotator(GetActorRotation(), Camera->GetActorRotation()).Yaw;
-			const float Result = GamepadRotation - ActorRotationRelativeToCamera;
-			return Result < 0 ? Result + 360: Result;
+			Camera = GameState->GetCamera();
 		}
 	}
-	return GamepadRotation;
+	if (!IsValid(Camera)) return GamepadRotation;
+	const float ActorRotationRelativeToCamera = UKismetMathLibrary::NormalizedDeltaRotator(GetActorRotation(), Camera->GetActorRotation()).Yaw;
+	const float Result = GamepadRotation - ActorRotationRelativeToCamera;
+	return Result < 0 ? Result + 360: Result;
 }
 
 void ASFRPlayerCharacter::MoveForwardCallback(float AxisValue)
@@ -74,10 +75,11 @@ void ASFRPlayerCharacter::GameStart()
 {
 	if (const ASFRMultiplayerGameState* GameState = GetWorld()->GetGameState<ASFRMultiplayerGameState>())
 	{
-		if (IsValid(GameState->GetCamera()))
+		Camera = GameState->GetCamera();
+		if (IsValid(Camera))
 		{
-			CameraForwardVector = GameState->GetCamera()->GetActorForwardVector();
-			CameraRightVector = GameState->GetCamera()->GetActorRightVector();
+			CameraForwardVector = Camera->GetActorForwardVector();
+			CameraRightVector = Camera->GetActorRightVector();
 		}
 	}
 }

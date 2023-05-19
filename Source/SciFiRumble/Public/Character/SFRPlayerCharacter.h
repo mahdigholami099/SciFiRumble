@@ -6,6 +6,7 @@
 #include "Character/SFRCharacter.h"
 #include "SFRPlayerCharacter.generated.h"
 
+class ASFRCameraActor;
 /**
  * 
  */
@@ -19,6 +20,9 @@ public:
 	FVector CameraForwardVector;
 
 	FVector CameraRightVector;
+
+	UPROPERTY()
+	ASFRCameraActor* Camera;
 
 public:
 
