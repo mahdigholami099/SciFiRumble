@@ -32,7 +32,10 @@ void ASFRAIController::MoveThread()
 	if (GetMoveStatus() == EPathFollowingStatus::Moving) return;
 	
 	// pause timer for avoid interruption
-	GetWorldTimerManager().PauseTimer(MoveThreadTimerHandle);
+	if (MoveThreadTimerHandle.IsValid())
+	{
+		GetWorldTimerManager().PauseTimer(MoveThreadTimerHandle);
+	}
 
 
 	// get all Chargers
@@ -86,13 +89,19 @@ void ASFRAIController::MoveThread()
 	}
 
 	// start timer to continue its job
-	GetWorldTimerManager().UnPauseTimer(MoveThreadTimerHandle);
+	if (MoveThreadTimerHandle.IsValid())
+	{
+		GetWorldTimerManager().UnPauseTimer(MoveThreadTimerHandle);
+	}
 }
 
 void ASFRAIController::ShootThread()
 {
 	// pause timer for avoid interruption
-	GetWorldTimerManager().PauseTimer(MoveThreadTimerHandle);
+	if (MoveThreadTimerHandle.IsValid())
+	{
+		GetWorldTimerManager().PauseTimer(MoveThreadTimerHandle);
+	}
 
 	// get all character and remove self from array
 	TArray<AActor*> Characters;
@@ -119,7 +128,10 @@ void ASFRAIController::ShootThread()
 	GetWorldTimerManager().SetTimer(DelayHandle, [=]
 	{
 		// start timer to continue its job
-		GetWorldTimerManager().UnPauseTimer(MoveThreadTimerHandle);
+		if (MoveThreadTimerHandle.IsValid())
+		{
+			GetWorldTimerManager().UnPauseTimer(MoveThreadTimerHandle);
+		}
 	}, DelaySeconds, false);
 }
 
