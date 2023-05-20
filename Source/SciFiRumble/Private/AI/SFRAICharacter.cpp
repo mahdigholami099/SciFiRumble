@@ -10,7 +10,7 @@ ASFRAICharacter::ASFRAICharacter()
 
 FBarrelRotation ASFRAICharacter::GetBarrelRotation()
 {
-	if (IsValid(AimTarget))
+	if (IsValid(AimTarget) && !AimTarget->IsPendingKill())
 	{
 		return AimTarget->GetActorLocation();
 	}
