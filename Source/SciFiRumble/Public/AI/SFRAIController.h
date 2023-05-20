@@ -65,5 +65,8 @@ protected:
 
 	UFUNCTION()
 	void ShootThread();
+
+	UFUNCTION()
+	void GameStart();
 	
 };

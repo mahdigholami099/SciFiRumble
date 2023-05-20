@@ -6,6 +6,7 @@
 #include "GameFramework/GameMode.h"
 #include "SFRMultiplayerGameMode.generated.h"
 
+class ASFRAICharacter;
 USTRUCT()
 struct FSpawnData
 {
@@ -21,6 +22,9 @@ struct FSpawnData
 	{}
 
 	FSpawnData(APlayerController* Controller): Controller(Controller), Character(nullptr)
+	{}
+
+	FSpawnData(ACharacter* Character): Controller(nullptr), Character(Character)
 	{}
 
 	FSpawnData(): Controller(nullptr), Character(nullptr)
@@ -81,6 +85,9 @@ protected:
 
 	TArray<FSpawnData> SpawnData;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<ASFRAICharacter> AICharacter;
+
 public:
 
 	ASFRMultiplayerGameMode();
@@ -101,7 +108,7 @@ public:
 	void StartGame();
 	
 	UFUNCTION(BlueprintCallable)
-    void FillRestWithAI();
+    void SpawnAI(APlayerController* PlayerController);
 	
 protected:
 

@@ -3,6 +3,7 @@
 
 #include "GameMode/SFRMultiplayerGameMode.h"
 
+#include "AI/SFRAICharacter.h"
 #include "Character/SFRCharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/PlayerStart.h"
@@ -117,24 +118,67 @@ void ASFRMultiplayerGameMode::ConfirmCharacter()
 		APlayerController* PlayerActor = It->Get();
 		EnableInput(PlayerActor);
 	}
-	
+
+	if (NumberOfPlayerCharacterSpawned >= MaxPlayer)
+	{
+		StartGame();
+		return;
+	}
 	OnReadySpawnCharacter.Broadcast(NumberOfPlayerCharacterSpawned);
 	
 }
 
 void ASFRMultiplayerGameMode::StartGame()
 {
+	if (NumberOfPlayerCharacterSpawned <= 1) return;
 	for (const FSpawnData EachSpawnDate: SpawnData)
 	{
-		EachSpawnDate.Controller->Possess(EachSpawnDate.Character);
+		if (IsValid(EachSpawnDate.Controller))
+		{
+			EachSpawnDate.Controller->Possess(EachSpawnDate.Character);
+		}
 	}
 	OnGameStart.Broadcast();
 }
 
-void ASFRMultiplayerGameMode::FillRestWithAI()
+void ASFRMultiplayerGameMode::SpawnAI(APlayerController* PlayerController)
 {
+	if (NumberOfPlayerCharacterSpawned <= 0) return;
 	
-	StartGame();
+	// check and change GameStatus
+	if (ASFRMultiplayerGameState* GS = GetGameState<ASFRMultiplayerGameState>())
+	{
+		if (GS->GameStatus != EGameStatus::SpawnCharacter) return;
+		GS->GameStatus = EGameStatus::CustomizeCharacter;
+	}
+	else return;
+
+	// Broadcast new work to sync the ui or other actors
+	OnSpawnCharacter.Broadcast(NumberOfPlayerCharacterSpawned);
+
+	// disable other controller input for don't interrupt
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		APlayerController* PlayerActor = It->Get();
+		if (PlayerController != PlayerActor)
+		{
+			DisableInput(PlayerActor);
+		}
+	}
+
+	// spawn character and store it for possess and modify
+	if (const AActor* PlayerStart = FindPlayerStart(PlayerController, FString::FromInt(NumberOfPlayerCharacterSpawned)))
+	{
+		FTransform Transform = PlayerStart->GetActorTransform();
+		Transform.SetLocation(Transform.GetLocation() + SpawnLocationOffset);
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		if (ACharacter* Character = GetWorld()->SpawnActor<ACharacter>(AICharacter, Transform, SpawnParameters))
+		{
+			SpawnData.Add(Character);
+		}
+	}
 }
 
 void ASFRMultiplayerGameMode::BeginPlay()

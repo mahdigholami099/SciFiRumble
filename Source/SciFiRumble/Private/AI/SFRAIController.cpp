@@ -9,6 +9,7 @@
 #include "GameFramework/Character.h"
 #include "Item/SFRChargeBulletItem.h"
 #include "Kismet/GameplayStatics.h"
+#include "Projectile/SFRSplineProjectileActor.h"
 
 void ASFRAIController::BeginPlay()
 {
@@ -16,8 +17,13 @@ void ASFRAIController::BeginPlay()
 
 	NavArea = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
 
-	GetWorldTimerManager().SetTimer(MoveThreadTimerHandle, this, &ASFRAIController::MoveThread, MoveThreadRate, true);
-	GetWorldTimerManager().SetTimer(ShootThreadTimerHandle, this, &ASFRAIController::ShootThread, ShootThreadRate, true);
+	AGameModeBase* GameModeNotCasted = UGameplayStatics::GetGameMode(GetWorld());
+	if (!IsValid(GameModeNotCasted)) return;
+
+	if (ASFRMultiplayerGameMode* GameMode = Cast<ASFRMultiplayerGameMode>(GameModeNotCasted))
+	{
+		GameMode->OnGameStart.AddDynamic(this, &ASFRAIController::GameStart);
+	}
 }
 
 void ASFRAIController::MoveThread()
@@ -115,4 +121,10 @@ void ASFRAIController::ShootThread()
 		// start timer to continue its job
 		GetWorldTimerManager().UnPauseTimer(MoveThreadTimerHandle);
 	}, DelaySeconds, false);
+}
+
+void ASFRAIController::GameStart()
+{
+	GetWorldTimerManager().SetTimer(MoveThreadTimerHandle, this, &ASFRAIController::MoveThread, MoveThreadRate, true);
+	GetWorldTimerManager().SetTimer(ShootThreadTimerHandle, this, &ASFRAIController::ShootThread, ShootThreadRate, true);
 }
