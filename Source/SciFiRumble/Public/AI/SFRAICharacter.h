@@ -15,6 +15,12 @@ class SCIFIRUMBLE_API ASFRAICharacter : public ASFRCharacter
 	GENERATED_BODY()
 
 public:
+
+	AActor* AimTarget;
+	
+public:
 	ASFRAICharacter();
+
+	virtual FBarrelRotation GetBarrelRotation() override;
 	
 };

@@ -7,3 +7,12 @@ ASFRAICharacter::ASFRAICharacter()
 {
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
+
+FBarrelRotation ASFRAICharacter::GetBarrelRotation()
+{
+	if (IsValid(AimTarget))
+	{
+		return AimTarget->GetActorLocation();
+	}
+	return FVector::ZeroVector;
+}

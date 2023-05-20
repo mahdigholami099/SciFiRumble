@@ -6,6 +6,26 @@
 #include "AIController.h"
 #include "SFRAIController.generated.h"
 
+
+USTRUCT(BlueprintType)
+struct FRange
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float Min;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float Max;
+
+	FRange(): Min(0.0f), Max(1.0f)
+	{}
+
+	FRange(const float Min, const float Max): Min(Min), Max(Max)
+	{}
+};
+
+
 class UNavigationSystemV1;
 /**
  * 
@@ -31,7 +51,10 @@ protected:
 	float MoveThreadRate = 0.1f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float ShootThreadRate = 0.5f;
+	float ShootThreadRate = 2.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FRange ShootThreadRandomDelay = {1.0f, 5.0f};
 	
 protected:
 

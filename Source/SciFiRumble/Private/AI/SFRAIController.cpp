@@ -4,6 +4,7 @@
 #include "AI/SFRAIController.h"
 
 #include "NavigationSystem.h"
+#include "AI/SFRAICharacter.h"
 #include "Character/SFRCharacter.h"
 #include "GameFramework/Character.h"
 #include "Item/SFRChargeBulletItem.h"
@@ -84,5 +85,34 @@ void ASFRAIController::MoveThread()
 
 void ASFRAIController::ShootThread()
 {
-	
+	// pause timer for avoid interruption
+	GetWorldTimerManager().PauseTimer(MoveThreadTimerHandle);
+
+	// get all character and remove self from array
+	TArray<AActor*> Characters;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASFRCharacter::StaticClass(), Characters);
+	Characters.RemoveAt(Characters.Find(GetCharacter()));
+
+	ASFRAICharacter* MyCharacter = Cast<ASFRAICharacter>(GetCharacter());
+	if (Characters.Num() > 0)
+	{
+		MyCharacter->AimTarget = Characters[FMath::RandRange(0, Characters.Num() - 1)];
+	}
+
+	const int Ammo = MyCharacter->GetAmmo();
+	const float RandomValue = FMath::FRand();
+
+	if (RandomValue <= Ammo * 0.2f)
+	{
+		MyCharacter->Fire();
+	}
+
+
+	FTimerHandle DelayHandle;
+	const float DelaySeconds = FMath::RandRange(ShootThreadRandomDelay.Min, ShootThreadRandomDelay.Max);
+	GetWorldTimerManager().SetTimer(DelayHandle, [=]
+	{
+		// start timer to continue its job
+		GetWorldTimerManager().UnPauseTimer(MoveThreadTimerHandle);
+	}, DelaySeconds, false);
 }
