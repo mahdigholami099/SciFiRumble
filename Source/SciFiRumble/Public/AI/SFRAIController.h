@@ -41,9 +41,6 @@ protected:
 	
 	FTimerHandle ShootThreadTimerHandle;
 
-	UPROPERTY()
-	UNavigationSystemV1* NavArea;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float RandomMoveRange = 1000.0f;
 

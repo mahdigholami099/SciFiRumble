@@ -15,8 +15,6 @@ void ASFRAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	NavArea = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
-
 	AGameModeBase* GameModeNotCasted = UGameplayStatics::GetGameMode(GetWorld());
 	if (!IsValid(GameModeNotCasted)) return;
 
@@ -72,7 +70,7 @@ void ASFRAIController::MoveThread()
 			}
 			if (bReachable)
 			{
-				MoveToActor(Charger);
+				MoveToActor(Charger, 10.f);
 				break;
 			}
 		}
@@ -81,10 +79,11 @@ void ASFRAIController::MoveThread()
 	// we should move just randomly cause no charger found
 	if (GetMoveStatus() != EPathFollowingStatus::Moving)
 	{
+		UNavigationSystemV1* NavArea = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
 		FNavLocation NavLocationResult;
 		if (NavArea->GetRandomReachablePointInRadius(GetCharacter()->GetActorLocation(), RandomMoveRange, NavLocationResult))
 		{
-			MoveToLocation(NavLocationResult.Location);
+			MoveToLocation(NavLocationResult.Location, 10.f);
 		}
 	}
 
@@ -98,9 +97,9 @@ void ASFRAIController::MoveThread()
 void ASFRAIController::ShootThread()
 {
 	// pause timer for avoid interruption
-	if (MoveThreadTimerHandle.IsValid())
+	if (ShootThreadTimerHandle.IsValid())
 	{
-		GetWorldTimerManager().PauseTimer(MoveThreadTimerHandle);
+		GetWorldTimerManager().PauseTimer(ShootThreadTimerHandle);
 	}
 
 	// get all character and remove self from array
@@ -119,7 +118,10 @@ void ASFRAIController::ShootThread()
 
 	if (RandomValue <= Ammo * 0.2f)
 	{
-		MyCharacter->Fire();
+		if (IsValid(MyCharacter->AimTarget))
+		{
+			MyCharacter->Fire();
+		}
 	}
 
 
@@ -128,9 +130,9 @@ void ASFRAIController::ShootThread()
 	GetWorldTimerManager().SetTimer(DelayHandle, [=]
 	{
 		// start timer to continue its job
-		if (MoveThreadTimerHandle.IsValid())
+		if (ShootThreadTimerHandle.IsValid())
 		{
-			GetWorldTimerManager().UnPauseTimer(MoveThreadTimerHandle);
+			GetWorldTimerManager().UnPauseTimer(ShootThreadTimerHandle);
 		}
 	}, DelaySeconds, false);
 }
