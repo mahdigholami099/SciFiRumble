@@ -4,6 +4,7 @@
 #include "Character/SFRCharacter.h"
 
 #include "Character/SFRCharacterVariety.h"
+#include "Character/SFRSkinVariety.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Projectile/SFRBulletProjectileActor.h"
 
@@ -21,6 +22,11 @@ void ASFRCharacter::ChangeAmmo(const int Value)
 
 void ASFRCharacter::OnAmmoChange_Implementation(uint8 NewAmmo, int ChangeAmount)
 {
+	if (!CharacterVariety.IsValidIndex(CharacterIndex)) return;
+	USFRCharacterVariety* MyCharacter = CharacterVariety[CharacterIndex].GetDefaultObject();
+	if (!MyCharacter->SkinVariety.IsValidIndex(SkinIndex)) return;
+	USFRSkinVariety* MySkin = MyCharacter->SkinVariety[SkinIndex].GetDefaultObject();
+	MySkin->ChangeEmissive(this, NewAmmo);
 }
 
 void ASFRCharacter::Fire()

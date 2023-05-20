@@ -25,3 +25,29 @@ void USFRSkinVariety::SetSkin_Implementation(ASFRCharacter* CharacterActorRef)
 		}
 	}
 }
+
+void USFRSkinVariety::ChangeEmissive_Implementation(ASFRCharacter* CharacterActorRef, const float Value)
+{
+	if (EmissiveChanger.SetMaterialType == ESetMaterialType::Loop)
+	{
+		for (int Index = EmissiveChanger.LoopRange.From; Index <= EmissiveChanger.LoopRange.To; ++Index)
+		{
+			UMaterialInstanceDynamic* MaterialInstanceDynamic = CharacterActorRef->GetMesh()->CreateDynamicMaterialInstance(Index);
+			if (MaterialInstanceDynamic != nullptr)
+			{
+				MaterialInstanceDynamic->SetScalarParameterValue(EmissiveParameterName, Value * EmissiveMultiplier);
+			}
+		}
+	}
+	else
+	{
+		for (const int Index: EmissiveChanger.Indexes)
+		{
+			UMaterialInstanceDynamic* MaterialInstanceDynamic = CharacterActorRef->GetMesh()->CreateDynamicMaterialInstance(Index);
+			if (MaterialInstanceDynamic != nullptr)
+			{
+				MaterialInstanceDynamic->SetScalarParameterValue(EmissiveParameterName, Value * EmissiveMultiplier);
+			}
+		}
+	}
+}
