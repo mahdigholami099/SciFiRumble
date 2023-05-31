@@ -45,6 +45,7 @@ void ASFRSplineProjectileActor::BeginPlay()
 
 }
 
+#if WITH_EDITOR
 void ASFRSplineProjectileActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -75,6 +76,7 @@ void ASFRSplineProjectileActor::PostEditChangeProperty(FPropertyChangedEvent& Pr
 		}
 	}
 }
+#endif
 
 void ASFRSplineProjectileActor::FireTheProjectile()
 {
