@@ -32,7 +32,6 @@ void ASFRBulletProjectileActor::BeginOverlap(UPrimitiveComponent* OverlappedComp
 		{
 			Character->LaunchCharacter(Velocity / Character->GetLaunchResistance(), false, false);
 			OnHit(OtherActor);
-			Destroy();
 		}
 	}
 }
