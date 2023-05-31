@@ -11,7 +11,7 @@ void USFRSkinVariety::SetSkin_Implementation(ASFRCharacter* CharacterActorRef)
 	{
 		if (SkinMaterial.SetMaterialType == ESetMaterialType::Exact)
 		{
-			for (const int Index: SkinMaterial.Indexes)
+			for (int Index: SkinMaterial.Indexes)
 			{
 				CharacterActorRef->GetMesh()->SetMaterial(Index, SkinMaterial.Material);
 			}

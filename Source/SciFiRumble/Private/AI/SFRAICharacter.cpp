@@ -12,7 +12,7 @@ FBarrelRotation ASFRAICharacter::GetBarrelRotation()
 {
 	if (IsValid(AimTarget) && !AimTarget->IsPendingKill())
 	{
-		return AimTarget->GetActorLocation();
+		return AimTarget;
 	}
-	return FVector::ZeroVector;
+	return nullptr;
 }

@@ -28,21 +28,21 @@ struct FBarrelRotation
 	float Rotation;
 
 	UPROPERTY(BlueprintReadWrite)
-	FVector LookAt;
+	AActor* LookAt;
 	
 	UPROPERTY(BlueprintReadWrite)
 	ERotationMethod RotationMethod;
 
-	FBarrelRotation() : Rotation(0.0f), LookAt(FVector::ZeroVector), RotationMethod(ERotationMethod::NotImplemented)
+	FBarrelRotation() : Rotation(0.0f), LookAt(nullptr), RotationMethod(ERotationMethod::NotImplemented)
 	{}
 	
-	FBarrelRotation(const ERotationMethod RotationMethod) : Rotation(0.0f), LookAt(FVector::ZeroVector), RotationMethod(RotationMethod)
+	FBarrelRotation(const ERotationMethod RotationMethod) : Rotation(0.0f), LookAt(nullptr), RotationMethod(RotationMethod)
 	{}
 
-	FBarrelRotation(const FVector LookAt) : Rotation(0.0f), LookAt(LookAt), RotationMethod(ERotationMethod::LookAt)
+	FBarrelRotation(AActor* LookAt) : Rotation(0.0f), LookAt(LookAt), RotationMethod(ERotationMethod::LookAt)
 	{}
 
-	FBarrelRotation(const float Rotation) : Rotation(Rotation), LookAt(FVector::ZeroVector), RotationMethod(ERotationMethod::Rotation)
+	FBarrelRotation(const float Rotation) : Rotation(Rotation), LookAt(nullptr), RotationMethod(ERotationMethod::Rotation)
 	{}
 };
 
